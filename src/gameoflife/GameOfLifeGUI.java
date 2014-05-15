@@ -100,6 +100,7 @@ public class GameOfLifeGUI extends JPanel implements ActionListener, MouseListen
     {
         int x = e.getX();
         int y = e.getY();
+        if(x/4 < 100 && y/4 < 100)
         game.enableTableCell(y/4, x/4);
         repaint();
     }
