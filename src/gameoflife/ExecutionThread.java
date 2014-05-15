@@ -5,8 +5,6 @@
  */
 package gameoflife;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -41,6 +39,7 @@ public class ExecutionThread implements Runnable
             }
             game.nextStep();
             gui.repaint();
+            System.out.println(shouldWork);
         }
     }
     public void setShouldWork(boolean x)

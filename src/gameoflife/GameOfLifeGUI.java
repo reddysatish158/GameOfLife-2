@@ -14,28 +14,30 @@ import javax.swing.JPanel;
 
 public class GameOfLifeGUI extends JPanel implements ActionListener, MouseListener
 {
+    private int size;
     private Game game;
     private JButton bNextStep, bStart, bStop;
     private ExecutionThread executionThread = null;
     private Thread watek;
-    public GameOfLifeGUI(Game game)
+    public GameOfLifeGUI(Game game, int size)
     {
-        setSize(400, 400);
+        this.size = size;
+        setSize(size*game.getTablicaLength()+30, size*game.getTablicaLength());
         setLayout(null);
         this.game = game;
         
         bNextStep = new JButton("Next step");
-        bNextStep.setBounds(20, 430, 100, 20);
+        bNextStep.setBounds(20,  size*game.getTablicaLength()+30, 100, 20);
         bNextStep.addActionListener(this);
         add(bNextStep);
         
         bStart = new JButton("Start");
-        bStart.setBounds(20, 410, 100, 20);
+        bStart.setBounds(20, size*game.getTablicaLength()+10, 100, 20);
         bStart.addActionListener(this);
         add(bStart);
         
         bStop = new JButton("Stop");
-        bStop.setBounds(150, 410, 100, 20);
+        bStop.setBounds(150, size*game.getTablicaLength()+10, 100, 20);
         bStop.addActionListener(this);
         add(bStop);
         
@@ -46,14 +48,14 @@ public class GameOfLifeGUI extends JPanel implements ActionListener, MouseListen
     {
         Graphics2D g2D = (Graphics2D) g;
         g2D.setColor(Color.BLACK);
-        g2D.fillRect(x, y, 4, 4);
+        g2D.fillRect(x, y, size, size);
     }
     
     public void paintWhitePoint(Graphics g, int x, int y)
     {
         Graphics2D g2D = (Graphics2D) g;
         g2D.setColor(Color.WHITE);
-        g2D.fillRect(x, y, 4, 4);
+        g2D.fillRect(x, y, size, size);
     }
     
     @Override
@@ -65,9 +67,9 @@ public class GameOfLifeGUI extends JPanel implements ActionListener, MouseListen
             for(int j = 0; j <  game.getTablicaLength(); j++)
             {
                 if(game.getTableCell(j, i))
-                    paintWhitePoint(g, i*4, j*4);
+                    paintWhitePoint(g, i*size, j*size);
                 else
-                    paintBlackPoint(g, i*4, j*4);
+                    paintBlackPoint(g, i*size, j*size);
             }
         }
     }
@@ -76,6 +78,7 @@ public class GameOfLifeGUI extends JPanel implements ActionListener, MouseListen
     public void actionPerformed(ActionEvent e)
     {
         Object x = e.getSource();
+        int threadCounter = 0;
         if(x == bNextStep)
         {
             game.nextStep();
@@ -84,14 +87,18 @@ public class GameOfLifeGUI extends JPanel implements ActionListener, MouseListen
         }
         else if(x == bStart)
         {
-            executionThread = new ExecutionThread(game, this, true);
-            watek = new Thread(executionThread);
-            watek.start();
+            if(executionThread != null)
+                executionThread.setShouldWork(true);
+            else{
+                executionThread = new ExecutionThread(game, this, true);
+                watek = new Thread(executionThread);
+                watek.start();
+            }
         }
         else if( x == bStop)
         {
             if(!watek.isInterrupted())
-            executionThread.setShouldWork(false);
+            executionThread.setShouldWork(false);            
         }
     }
 
@@ -100,8 +107,8 @@ public class GameOfLifeGUI extends JPanel implements ActionListener, MouseListen
     {
         int x = e.getX();
         int y = e.getY();
-        if(x/4 < 100 && y/4 < 100)
-        game.enableTableCell(y/4, x/4);
+        if(x/size < 100 && y/size < 100)
+        game.enableTableCell(y/size, x/size);
         repaint();
     }
 

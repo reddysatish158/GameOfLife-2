@@ -87,12 +87,13 @@ public class Game
 
     public static void main(String[] args) throws InterruptedException
     {
+        int size = 6;
         Game gra = new Game();
         JFrame okno = new JFrame("Game of Life");
-        okno.setSize(500, 500);
+        okno.setSize(size*gra.getTablicaLength()+100, size*gra.getTablicaLength()+100);
         okno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        GameOfLifeGUI gui = new GameOfLifeGUI(gra);
+        GameOfLifeGUI gui = new GameOfLifeGUI(gra, size);
         okno.add(gui);
         okno.setVisible(true);        
     }
